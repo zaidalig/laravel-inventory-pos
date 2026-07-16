@@ -1,0 +1,12 @@
+@extends('layouts.app')
+@section('title', 'Users')
+@section('page_title', 'Users')
+@section('content')
+<div class="d-flex justify-content-between mb-4"><a href="{{ route('users.create') }}" class="btn btn-primary rounded-pill">Add User</a></div>
+<div class="card card-table border-0"><div class="table-responsive"><table class="table mb-0"><thead class="table-light"><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th class="text-end">Actions</th></tr></thead><tbody>
+@foreach($users as $user)
+<tr><td>{{ $user->name }}</td><td>{{ $user->email }}</td><td>{{ ucfirst($user->role) }}</td><td>{{ ucfirst($user->status) }}</td>
+<td class="text-end"><a href="{{ route('users.edit',$user) }}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen"></i></a>@if($user->id !== auth()->id())<button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-url="{{ route('users.destroy',$user) }}" data-name="{{ $user->name }}"><i class="fa-solid fa-trash"></i></button>@endif</td></tr>
+@endforeach
+</tbody></table></div>@if($users->hasPages())<div class="card-footer bg-white">{{ $users->links() }}</div>@endif</div>
+@endsection
