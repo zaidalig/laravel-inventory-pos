@@ -41,4 +41,9 @@ class User extends Authenticatable
     {
         return in_array($this->role, ['owner', 'manager', 'cashier'], true);
     }
+
+    public function canVoidSales(): bool
+    {
+        return in_array($this->role, ['owner', 'manager'], true);
+    }
 }
