@@ -22,6 +22,7 @@ class ProductRequest extends FormRequest
             'sku' => ['required', 'string', 'max:50', Rule::unique('products')->ignore($productId)],
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
             'cost_price' => 'required|numeric|min:0',
             'sale_price' => 'required|numeric|min:0',
             'stock_qty' => 'required|integer|min:0',

@@ -12,7 +12,7 @@ class Product extends Model
     use LogsActivity;
 
     protected $fillable = [
-        'category_id', 'supplier_id', 'sku', 'name', 'description',
+        'category_id', 'supplier_id', 'sku', 'name', 'description', 'image_path',
         'cost_price', 'sale_price', 'stock_qty', 'reorder_level', 'unit', 'status',
     ];
 

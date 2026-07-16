@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -50,7 +51,13 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request)
     {
-        $product = Product::create($request->validated());
+        $data = $request->safe()->except('image');
+
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('product-images', 'public');
+        }
+
+        $product = Product::create($data);
 
         return redirect()->route('products.index')
             ->with('success', "Product \"{$product->name}\" created.");
@@ -73,7 +80,16 @@ class ProductController extends Controller
 
     public function update(ProductRequest $request, Product $product)
     {
-        $product->update($request->validated());
+        $data = $request->safe()->except('image');
+
+        if ($request->hasFile('image')) {
+            if ($product->image_path) {
+                Storage::disk('public')->delete($product->image_path);
+            }
+            $data['image_path'] = $request->file('image')->store('product-images', 'public');
+        }
+
+        $product->update($data);
 
         return redirect()->route('products.show', $product)
             ->with('success', "Product \"{$product->name}\" updated.");
@@ -82,6 +98,11 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $name = $product->name;
+
+        if ($product->image_path) {
+            Storage::disk('public')->delete($product->image_path);
+        }
+
         $product->delete();
 
         return redirect()->route('products.index')
