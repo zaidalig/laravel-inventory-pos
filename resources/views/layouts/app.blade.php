@@ -57,6 +57,11 @@
                     <i class="fa-solid fa-arrows-rotate"></i><span>Stock</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ route('reports.sales') }}" class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-file-csv"></i><span>Reports</span>
+                </a>
+            </li>
             @endcan
             @can('manage-users')
             <li class="nav-item">

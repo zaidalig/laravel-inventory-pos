@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\SupplierController;
@@ -29,6 +30,7 @@ Route::middleware(['auth', 'active.user'])->group(function () {
         Route::get('stock', [StockMovementController::class, 'index'])->name('stock.index');
         Route::get('stock/adjust', [StockMovementController::class, 'create'])->name('stock.create');
         Route::post('stock/adjust', [StockMovementController::class, 'store'])->name('stock.store');
+        Route::get('reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
     });
 
     Route::middleware('can:manage-sales')->group(function () {
