@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use App\Services\MediaStorage;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -54,7 +55,7 @@ class ProductController extends Controller
         $data = $request->safe()->except('image');
 
         if ($request->hasFile('image')) {
-            $data['image_path'] = $request->file('image')->store('product-images', 'public');
+            $data['image_path'] = MediaStorage::store($request->file('image'), 'product-images');
         }
 
         $product = Product::create($data);
@@ -84,9 +85,9 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             if ($product->image_path) {
-                Storage::disk('public')->delete($product->image_path);
+                MediaStorage::delete($product->image_path);
             }
-            $data['image_path'] = $request->file('image')->store('product-images', 'public');
+            $data['image_path'] = MediaStorage::store($request->file('image'), 'product-images');
         }
 
         $product->update($data);
@@ -100,7 +101,7 @@ class ProductController extends Controller
         $name = $product->name;
 
         if ($product->image_path) {
-            Storage::disk('public')->delete($product->image_path);
+            MediaStorage::delete($product->image_path);
         }
 
         $product->delete();
