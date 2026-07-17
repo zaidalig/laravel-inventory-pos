@@ -104,6 +104,7 @@
             @endif
             @yield('content')
         </main>
+        <footer class="app-footer"><i class="fa-solid fa-store me-2"></i>Store Inventory &amp; POS</footer>
     </div>
 
     <div class="modal fade" id="deleteModal" tabindex="-1">

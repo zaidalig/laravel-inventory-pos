@@ -17,7 +17,8 @@ class ReportController extends Controller
             return $this->exportCsv($from, $to);
         }
 
-        $sales = $this->salesQuery($from, $to)->paginate(15)->withQueryString();
+        [$sort, $direction] = $this->tableSort($request, ['created_at', 'sale_number', 'total']);
+        $sales = $this->salesQuery($from, $to)->orderBy($sort, $direction)->paginate($this->tablePerPage($request))->withQueryString();
 
         return view('reports.sales', compact('sales', 'from', 'to'));
     }
@@ -26,8 +27,7 @@ class ReportController extends Controller
     {
         return Sale::with(['user', 'items'])
             ->whereDate('created_at', '>=', $from)
-            ->whereDate('created_at', '<=', $to)
-            ->latest();
+            ->whereDate('created_at', '<=', $to);
     }
 
     protected function exportCsv(string $from, string $to): StreamedResponse

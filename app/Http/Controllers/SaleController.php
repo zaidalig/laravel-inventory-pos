@@ -22,7 +22,8 @@ class SaleController extends Controller
             });
         }
 
-        $sales = $query->latest()->paginate(10)->withQueryString();
+        [$sort, $direction] = $this->tableSort($request, ['created_at', 'sale_number', 'total', 'status']);
+        $sales = $query->orderBy($sort, $direction)->paginate($this->tablePerPage($request))->withQueryString();
 
         return view('sales.index', compact('sales'));
     }

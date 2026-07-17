@@ -21,7 +21,8 @@ class CategoryController extends Controller
             $query->where('status', $request->input('status'));
         }
 
-        $categories = $query->latest()->paginate(10)->withQueryString();
+        [$sort, $direction] = $this->tableSort($request, ['created_at', 'name', 'status']);
+        $categories = $query->orderBy($sort, $direction)->paginate($this->tablePerPage($request))->withQueryString();
 
         return view('categories.index', compact('categories'));
     }

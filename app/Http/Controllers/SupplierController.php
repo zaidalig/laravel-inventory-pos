@@ -25,7 +25,8 @@ class SupplierController extends Controller
             $query->where('status', $request->input('status'));
         }
 
-        $suppliers = $query->latest()->paginate(10)->withQueryString();
+        [$sort, $direction] = $this->tableSort($request, ['created_at', 'name', 'status']);
+        $suppliers = $query->orderBy($sort, $direction)->paginate($this->tablePerPage($request))->withQueryString();
 
         return view('suppliers.index', compact('suppliers'));
     }
