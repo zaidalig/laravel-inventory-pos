@@ -24,7 +24,8 @@ class PurchaseOrderController extends Controller
             $query->where('order_number', 'like', "%{$search}%");
         }
 
-        $orders = $query->latest()->paginate(10)->withQueryString();
+        [$sort, $direction] = $this->tableSort($request, ['created_at', 'order_number', 'status', 'total_amount']);
+        $orders = $query->orderBy($sort, $direction)->paginate($this->tablePerPage($request))->withQueryString();
 
         return view('purchases.index', compact('orders'));
     }

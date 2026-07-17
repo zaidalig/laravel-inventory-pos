@@ -70,11 +70,13 @@
                 </a>
             </li>
             @endcan
-            <li class="nav-item">
+            @can('manage-users')
+                <li class="nav-item">
                 <a href="{{ route('activity.index') }}" class="nav-link {{ request()->routeIs('activity.*') ? 'active' : '' }}">
                     <i class="fa-solid fa-clock-rotate-left"></i><span>Activity Logs</span>
                 </a>
             </li>
+            @endcan
         </ul>
     </aside>
 
@@ -102,6 +104,7 @@
             @endif
             @yield('content')
         </main>
+        <footer class="app-footer"><i class="fa-solid fa-store me-2"></i>Store Inventory &amp; POS</footer>
     </div>
 
     <div class="modal fade" id="deleteModal" tabindex="-1">

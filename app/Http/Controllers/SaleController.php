@@ -22,7 +22,8 @@ class SaleController extends Controller
             });
         }
 
-        $sales = $query->latest()->paginate(10)->withQueryString();
+        [$sort, $direction] = $this->tableSort($request, ['created_at', 'sale_number', 'total', 'status']);
+        $sales = $query->orderBy($sort, $direction)->paginate($this->tablePerPage($request))->withQueryString();
 
         return view('sales.index', compact('sales'));
     }
@@ -108,5 +109,34 @@ class SaleController extends Controller
         $sale->load(['user', 'items.product']);
 
         return view('sales.show', compact('sale'));
+    }
+
+    public function void(Sale $sale, StockService $stockService)
+    {
+        if ($sale->status === 'voided') {
+            return back()->with('error', 'This sale has already been voided.');
+        }
+
+        try {
+            DB::transaction(function () use ($sale, $stockService) {
+                foreach ($sale->items as $item) {
+                    $product = Product::lockForUpdate()->findOrFail($item->product_id);
+
+                    $stockService->adjust(
+                        $product,
+                        (int) $item->quantity,
+                        'return',
+                        $sale->sale_number,
+                        'Sale voided — stock restored'
+                    );
+                }
+
+                $sale->update(['status' => 'voided']);
+            });
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return back()->with('success', 'Sale voided and stock restored.');
     }
 }

@@ -36,7 +36,8 @@ class ProductController extends Controller
             $query->whereColumn('stock_qty', '<=', 'reorder_level');
         }
 
-        $products = $query->latest()->paginate(10)->withQueryString();
+        [$sort, $direction] = $this->tableSort($request, ['created_at', 'name', 'sku', 'stock_qty', 'sale_price']);
+        $products = $query->orderBy($sort, $direction)->paginate($this->tablePerPage($request))->withQueryString();
         $categories = Category::where('status', 'active')->orderBy('name')->get();
 
         return view('products.index', compact('products', 'categories'));

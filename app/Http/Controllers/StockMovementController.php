@@ -21,7 +21,8 @@ class StockMovementController extends Controller
             $query->where('product_id', $request->input('product_id'));
         }
 
-        $movements = $query->latest()->paginate(15)->withQueryString();
+        [$sort, $direction] = $this->tableSort($request, ['created_at', 'quantity', 'type']);
+        $movements = $query->orderBy($sort, $direction)->paginate($this->tablePerPage($request))->withQueryString();
         $products = Product::orderBy('name')->get();
 
         return view('stock.index', compact('movements', 'products'));

@@ -20,5 +20,5 @@
 <td>{{ $sale->user?->name ?? '-' }}</td>
 </tr>
 @empty<tr><td colspan="6" class="text-center py-4 text-muted">No sales in this date range.</td></tr>@endforelse
-</tbody></table></div>@if($sales->hasPages())<div class="card-footer bg-white">{{ $sales->links() }}</div>@endif</div>
+</tbody></table></div>@include('components.table-pagination', ['paginator'=>$sales, 'sorts'=>['created_at'=>'Created','sale_number'=>'Sale #','total'=>'Total']])</div>
 @endsection

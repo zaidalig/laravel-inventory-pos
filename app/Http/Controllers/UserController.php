@@ -26,7 +26,8 @@ class UserController extends Controller
             $query->where('role', $request->input('role'));
         }
 
-        $users = $query->latest()->paginate(10)->withQueryString();
+        [$sort, $direction] = $this->tableSort($request, ['created_at', 'name', 'email', 'role']);
+        $users = $query->orderBy($sort, $direction)->paginate($this->tablePerPage($request))->withQueryString();
 
         return view('users.index', compact('users'));
     }

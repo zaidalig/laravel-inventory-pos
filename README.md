@@ -83,3 +83,14 @@ php artisan migrate:fresh --seed
 php artisan route:list
 php artisan test
 ```
+
+## Branching & promote
+
+```
+feature/*  →  develop (dev)  →  qa  →  main (production)
+```
+
+1. Open a PR from `feature/<name>` into `develop`.
+2. After QA sign-off on `develop`, run **Actions → Promote** (`develop` → `qa`).
+3. After QA environment verification, run **Promote** (`qa` → `main`).
+4. CI (PHPUnit) must pass on every PR to `develop`, `qa`, and `main`.
